@@ -54,19 +54,17 @@
         _imageUrl = url;
         
         [[QDImageDownloader sharedDownloader] getImageWithUrl:url needCache:needCache completion:^(UIImage *result, NSError *error, NSURL *url) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (!result || error) {
-                    [self setImage:_placeholder];
-                    if (completion)
-                        completion([NSError errorWithDomain:@"QDImageView" code:0 userInfo:@{NSLocalizedDescriptionKey:@"Error during image loading"}]);
-                }else{
-                    if ([_imageUrl.absoluteString isEqualToString:url.absoluteString]){
-                        [self setImage:result];
-                    }
-                    if (completion)
-                        completion(nil);
+            if (!result || error) {
+                [self setImage:_placeholder];
+                if (completion)
+                    completion([NSError errorWithDomain:@"QDImageView" code:0 userInfo:@{NSLocalizedDescriptionKey:@"Error during image loading"}]);
+            }else{
+                if ([_imageUrl.absoluteString isEqualToString:url.absoluteString]){
+                    [self setImage:result];
                 }
-            });
+                if (completion)
+                    completion(nil);
+            }
         }];
     }else{
         if (completion)
